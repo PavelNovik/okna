@@ -1,0 +1,46 @@
+/* Liwserwis — «вид из окна»: тёмно-синяя стена комнаты, белая ПВХ-рама, тёплый рассвет за стеклом,
+   дальше — светлые матовые панели над фиксированным пейзажем */
+:root {
+  color-scheme: light;
+
+  --wall: #0c1d36;
+  --navy: #0c1d36;
+  --navy-2: #14294a;
+  --blue: #0b4ea2;
+  --blue-hi: #2f7fe0;
+  --sky: #9cc9ff;
+  --sun: #ffb53d;
+  --sun-hi: #ffd88a;
+  --sun-deep: #e08600;
+  --wa: #25d366;
+
+  --ink: #0f1b2d;
+  --muted: #4a596e;
+  --faint: #7a879a;
+  --line: rgb(12 29 54 / 0.1);
+  --on-dark: #eef3fa;
+  --on-dark-muted: #a9b8cc;
+
+  --paper: rgb(255 255 255 / 0.86);
+  --paper-border: rgb(255 255 255 / 0.75);
+  --paper-shadow: 0 30px 80px -34px rgb(12 29 54 / 0.55);
+  --blur: blur(18px) saturate(150%);
+
+  --grad-sun: linear-gradient(120deg, #ffe0a0 0%, #ffb53d 50%, #ff9a1f 100%);
+  --grad-text: linear-gradient(100deg, #ffe6ad 0%, #ffb53d 55%, #ff8f3d 100%);
+
+  --font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius: 28px;
+  --radius-sm: 14px;
+  --container: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --header-h: 64px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Фазы hero из --hp (0…1, ставит useEffectsFx): ручка → створки → пролёт */
+  --handle: clamp(0, calc((var(--hp, 0) - 0.01) / 0.07), 1);
+  --open: clamp(0, calc((var(--hp, 0) - 0.07) / 0.28), 1);
+  --zoom: clamp(0, calc((var(--hp, 0) - 0.3) / 0.62), 1);
+}

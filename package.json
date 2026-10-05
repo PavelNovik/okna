@@ -1,0 +1,23 @@
+{
+  "name": "liwserwis",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr src/entry-server.jsx --outDir dist-server && node scripts/prerender.js",
+    "preview": "vite preview",
+    "images": "node scripts/fetch-images.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/manrope": "^5.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.2.0",
+    "sharp": "^0.35.5",
+    "vite": "^7.3.6"
+  },
+  "private": true
+}
