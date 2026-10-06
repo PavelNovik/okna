@@ -1832,8 +1832,78 @@ main:focus {
   color: var(--gold);
 }
 
-.gallery__dots {
+/* ---------- Слайдеры (useSnapSlider + SliderControls) ---------- */
+.slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+.slider-controls.is-static {
   display: none;
+}
+
+.slider-controls__arrow {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  opacity: 0.85;
+  transition: background 0.25s, color 0.25s, border-color 0.25s, opacity 0.25s;
+}
+
+.slider-controls__arrow:hover:not(:disabled) {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--night);
+  opacity: 1;
+}
+
+.slider-controls__arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.slider-controls__dots {
+  display: flex;
+  gap: 2px;
+}
+
+.slider-controls__dots button {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.slider-controls__dots button::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.3;
+  transition: width 0.3s var(--ease), background 0.3s, opacity 0.3s;
+}
+
+.slider-controls__dots .is-active::before {
+  width: 18px;
+  border-radius: 3px;
+  background: var(--gold);
+  opacity: 1;
 }
 
 /* Телефон: лента со свайпом. Карточка ~84% ширины — видно край следующего фото, это подсказка «листай» */
@@ -1868,40 +1938,6 @@ main:focus {
 
   .gallery__item img {
     aspect-ratio: 4 / 3;
-  }
-
-  .gallery__dots {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-top: 18px;
-  }
-
-  .gallery__dots button {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: 0;
-    background: none;
-    position: relative;
-  }
-
-  .gallery__dots button::before {
-    content: '';
-    position: absolute;
-    inset: 50% auto auto 50%;
-    width: 6px;
-    height: 6px;
-    translate: -50% -50%;
-    border-radius: 50%;
-    background: rgb(255 255 255 / 0.35);
-    transition: width 0.3s var(--ease), background 0.3s;
-  }
-
-  .gallery__dots .is-active::before {
-    width: 18px;
-    border-radius: 3px;
-    background: var(--gold);
   }
 }
 
@@ -2051,14 +2087,49 @@ main:focus {
   color: #c99a2e;
 }
 
+/* лента со свайпом: телефон — 1 карточка (виден край следующей), планшет и десктоп — по 2 */
 .reviews {
-  display: grid;
+  display: flex;
   gap: 24px;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 4px var(--gutter);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
 }
 
-@media (min-width: 900px) {
+.reviews::-webkit-scrollbar {
+  display: none;
+}
+
+.reviews > li {
+  flex: 0 0 86%;
+  scroll-snap-align: start;
+}
+
+/* появление при прокрутке не срабатывает для карточек за правым краем ленты */
+.reviews > li[data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (min-width: 700px) {
+  .reviews > li {
+    flex-basis: calc((100% - var(--gutter) * 2 - 24px) / 2);
+  }
+}
+
+@media (min-width: 1340px) {
   .reviews {
-    grid-template-columns: repeat(3, 1fr);
+    margin-inline: 0;
+    padding-inline: 0;
+    scroll-padding-inline: 0;
+  }
+
+  .reviews > li {
+    flex-basis: calc((100% - 24px) / 2);
   }
 }
 

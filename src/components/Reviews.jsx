@@ -2,6 +2,8 @@ import { brand, googleReviews } from '../config.js'
 import { useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
 import SectionHead from './SectionHead.jsx'
+import SliderControls from './SliderControls.jsx'
+import { useSnapSlider } from '../hooks/useSnapSlider.js'
 
 const Stars = () => (
   <span className="stars" aria-hidden="true">
@@ -14,6 +16,7 @@ const Stars = () => (
 export default function Reviews() {
   const { t } = useLang()
   const r = t.reviews
+  const slider = useSnapSlider(r.items.length)
   return (
     <section className="section" id="reviews" aria-labelledby="reviews-title">
       <div className="container">
@@ -30,7 +33,7 @@ export default function Reviews() {
             </span>
           </a>
         </div>
-        <ul className="reviews">
+        <ul className="reviews" ref={slider.track} onScroll={slider.onScroll}>
           {r.items.map((it, i) => (
             <li key={it.name} className="review panel" data-reveal style={{ '--d': `${i * 80}ms` }}>
               <Icon name="quote" size={30} className="review__quote" />
@@ -50,6 +53,7 @@ export default function Reviews() {
             </li>
           ))}
         </ul>
+        <SliderControls slider={slider} labels={{ prev: r.prev, next: r.next }} />
         <p className="reviews__more">
           <a className="btn btn--light" href={googleReviews} target="_blank" rel="noopener">
             {r.cta} <Icon name="external" size={18} />

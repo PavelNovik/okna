@@ -182,6 +182,8 @@ export default {
     google: 'Google-Bewertungen',
     count: 'Bewertungen',
     cta: 'Bewertungen bei Google ansehen',
+    prev: 'Vorherige Bewertung',
+    next: 'Nächste Bewertung',
     note: 'Aus dem Polnischen übersetzt.',
     items: [
       {

@@ -180,6 +180,8 @@ export default {
     google: 'Opinie w Google',
     count: 'opinii',
     cta: 'Zobacz opinie w Google',
+    prev: 'Poprzednia opinia',
+    next: 'Następna opinia',
     note: '',
     items: [
       {
