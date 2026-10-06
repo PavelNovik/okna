@@ -4,7 +4,7 @@ import Icon from './Icon.jsx'
 import SectionHead from './SectionHead.jsx'
 
 export default function Diagnostics() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const d = t.diag
   return (
     <section className="section" id="diagnostics" aria-labelledby="diag-title">
@@ -28,6 +28,13 @@ export default function Diagnostics() {
               </li>
             ))}
           </ul>
+          {lang === 'pl' && (
+            <p className="diag__more">
+              <a className="btn btn--glass" href="/uslugi/diagnostyka-termowizyjna/">
+                Szczegóły badania <Icon name="arrow" size={18} />
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </section>

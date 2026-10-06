@@ -8,11 +8,11 @@ import SectionHead from './SectionHead.jsx'
 const empty = { name: '', phone: '', service: '', place: '', message: '' }
 
 // Форма без бэкенда: текст заявки уходит ссылкой wa.me (WhatsApp) или mailto: (почтовая программа)
-export default function Contact() {
+export default function Contact({ initialService = '' }) {
   const { t, preset } = useLang()
   const c = t.contact
   const f = c.form
-  const [form, setForm] = useState(empty)
+  const [form, setForm] = useState({ ...empty, service: initialService })
   const formRef = useRef(null)
   const waRef = useRef(null)
 

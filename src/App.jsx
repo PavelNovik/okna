@@ -1,59 +1,54 @@
 import { useCallback, useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
-import WindowHero from './components/WindowHero.jsx'
-import Perks from './components/Perks.jsx'
-import About from './components/About.jsx'
-import Services from './components/Services.jsx'
-import CtaBand from './components/CtaBand.jsx'
-import Diagnostics from './components/Diagnostics.jsx'
-import Gallery from './components/Gallery.jsx'
-import Reviews from './components/Reviews.jsx'
-import Certificates from './components/Certificates.jsx'
-import Blog from './components/Blog.jsx'
-import Faq from './components/Faq.jsx'
-import Contact from './components/Contact.jsx'
 import Footer from './components/Footer.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
 import WhatsAppFloat from './components/WhatsAppFloat.jsx'
+import MobileBar from './components/MobileBar.jsx'
+import Home from './pages/Home.jsx'
+import ServicePage from './pages/ServicePage.jsx'
+import {
+  AboutPage,
+  BlogPage,
+  ContactPage,
+  NotFoundPage,
+  PostPage,
+  PricesPage,
+  PrivacyPage,
+  ServicesPage,
+} from './pages/InfoPages.jsx'
 import { img } from './config.js'
 import { useReveal } from './hooks/useReveal.js'
 import { useEffectsFx } from './hooks/useEffectsFx.js'
-import { LangProvider, langFromPath, langPath, useLang } from './i18n/index.jsx'
+import { LangProvider, useLang } from './i18n/index.jsx'
+import { findRoute } from './routes.js'
 import { applyHead } from './seo.js'
 
-export default function App({ initialLang }) {
-  const [lang, setLangState] = useState(initialLang)
+// Многостраничный сайт: каждая страница пререндерится в свой HTML (scripts/prerender.js),
+// в браузере React «оживляет» только текущую страницу; переходы — обычные ссылки.
+export default function App({ path }) {
+  const route = findRoute(path)
   const [preset, setPreset] = useState(null) // { service, at } — услуга, выбранная в карточке
-  useReveal(lang)
+  useReveal(route.path)
   useEffectsFx()
 
-  const setLang = useCallback(
-    (next) => {
-      if (next === lang) return
-      history.pushState(null, '', langPath(next) + location.hash)
-      setLangState(next)
-    },
-    [lang]
-  )
-
+  // в dev-режиме (без пререндера) head собирается в браузере
   useEffect(() => {
-    applyHead(lang)
-  }, [lang])
+    if (import.meta.env.DEV) applyHead(route)
+  }, [route])
 
-  useEffect(() => {
-    const onPop = () => setLangState(langFromPath(location.pathname))
-    window.addEventListener('popstate', onPop)
-    return () => window.removeEventListener('popstate', onPop)
-  }, [])
-
-  // Кнопка в карточке услуги: выбрать услугу в форме и прокрутить к ней
+  // Кнопка «запросить» в карточке: выбрать услугу в форме и прокрутить к ней
   const ask = useCallback((service = '') => {
+    const form = document.getElementById('contact')
+    if (!form) {
+      location.href = '/kontakt/'
+      return
+    }
     setPreset({ service, at: Date.now() })
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   return (
-    <LangProvider value={{ lang, setLang, ask, preset }}>
+    <LangProvider value={{ lang: route.lang, path: route.path, ask, preset }}>
       <SkipLink />
       <div className="scene" aria-hidden="true">
         <img
@@ -62,32 +57,51 @@ export default function App({ initialLang }) {
           srcSet={`${img('view', 'sm')} 1100w, ${img('view')} 2400w`}
           sizes="100vw"
           alt=""
-          fetchPriority="high"
+          fetchPriority={route.page === 'home' ? 'high' : 'low'}
         />
       </div>
       <Header />
-      <main id="main" tabIndex={-1}>
-        <WindowHero />
-        <Perks />
-        <About />
-        <Services />
-        <CtaBand />
-        <Diagnostics />
-        <Gallery />
-        <Reviews />
-        <Certificates />
-        <Blog />
-        <Faq />
-        <Contact />
+      <main id="main" tabIndex={-1} className={route.page === 'home' ? 'is-home' : 'is-inner'}>
+        <Page route={route} />
       </main>
       <Footer />
       <WhatsAppFloat />
+      <MobileBar />
       <CookieConsent />
     </LangProvider>
   )
 }
 
+function Page({ route }) {
+  switch (route.page) {
+    case 'home':
+      return <Home />
+    case 'service':
+      return <ServicePage service={route.service} />
+    case 'services':
+      return <ServicesPage />
+    case 'prices':
+      return <PricesPage />
+    case 'about':
+      return <AboutPage />
+    case 'contact':
+      return <ContactPage />
+    case 'blog':
+      return <BlogPage />
+    case 'post':
+      return <PostPage post={route.post} />
+    case 'privacy':
+      return <PrivacyPage />
+    default:
+      return <NotFoundPage />
+  }
+}
+
 function SkipLink() {
   const { t } = useLang()
-  return <a href="#main" className="skip-link">{t.nav.skip}</a>
+  return (
+    <a href="#main" className="skip-link">
+      {t.nav.skip}
+    </a>
+  )
 }

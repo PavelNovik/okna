@@ -11,7 +11,7 @@ export default function Gallery() {
   const [open, setOpen] = useState(null)
   const items = gallery.map((id) => ({ src: img(id), alt: g.items[id] }))
   return (
-    <section className="section" id="gallery" aria-labelledby="gallery-title">
+    <section className="section" id="realizacje" aria-labelledby="gallery-title">
       <div className="container panel">
         <SectionHead id="gallery-title" eyebrow={g.eyebrow} title={g.title} lead={g.lead} />
         <ul className="gallery">

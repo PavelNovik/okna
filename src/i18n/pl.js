@@ -4,9 +4,9 @@ export default {
   locale: 'pl_PL',
 
   meta: {
-    title: 'Liwserwis — naprawa i regulacja okien i drzwi PCV | Poznań, Wielkopolska',
+    title: 'Naprawa okien Poznań — regulacja i serwis okien PCV | Liwserwis',
     description:
-      'Serwis okien i drzwi PCV i drewnianych: regulacja, wymiana okuć, zawiasów, klamek, uszczelek i pakietów szybowych, rolety, okna dachowe, diagnostyka termowizyjna. Gwarancja do 24 miesięcy, bezpłatna wycena. Poznań i Wielkopolska.',
+      'Naprawa i regulacja okien PCV i drewnianych w Poznaniu i Wielkopolsce. Regulacja od 50 zł, uszczelki od 30 zł, gwarancja do 24 mies. Tel. 453 506 360.',
   },
 
   nav: {
@@ -15,13 +15,25 @@ export default {
     close: 'Zamknij menu',
     lang: 'Język',
     cta: 'Zadzwoń',
-    items: { about: 'O nas', services: 'Usługi', gallery: 'Realizacje', reviews: 'Opinie', faq: 'FAQ', contact: 'Kontakt' },
+    links: [
+      ['/uslugi/', 'Usługi'],
+      ['/cennik/', 'Cennik'],
+      ['/#realizacje', 'Realizacje'],
+      ['/o-nas/', 'O nas'],
+      ['/porady/', 'Porady'],
+      ['/kontakt/', 'Kontakt'],
+    ],
+    home: 'Strona główna',
+    crumbs: 'Ścieżka nawigacji',
   },
 
+  bar: { call: 'Zadzwoń', wa: 'WhatsApp' },
+
   hero: {
-    eyebrow: 'Serwis okien i drzwi · Wielkopolska',
-    title: ['Okna, które ', 'znów działają', ' jak nowe.'],
-    lead: 'Naprawa, regulacja i serwis okien oraz drzwi PCV i drewnianych — z gwarancją do 24 miesięcy. Większość usterek usuwamy w dniu zgłoszenia.',
+    eyebrow: 'Serwis okien i drzwi · Poznań i Wielkopolska',
+    title: ['Naprawa i regulacja ', 'okien i drzwi', ' w Poznaniu'],
+    lead: 'Regulacja, wymiana uszczelek, okuć, zawiasów, klamek i szyb w oknach PCV i drewnianych. Większość usterek usuwamy podczas jednej wizyty — z gwarancją do 24 miesięcy.',
+    price: 'Regulacja okna od 50 zł',
     primary: 'Zadzwoń',
     secondary: 'WhatsApp',
     hours: 'Codziennie 8:00–20:00',
@@ -51,13 +63,30 @@ export default {
     ],
     winkhaus: 'Autoryzowany serwis okuć WINKHAUS',
     brandsTitle: 'Serwisujemy okna i okucia m.in. marek',
+    more: 'Więcej o firmie',
+  },
+
+  process: {
+    eyebrow: 'Jak działamy',
+    title: 'Od telefonu do sprawnego okna',
+    steps: [
+      { title: 'Zgłoszenie', text: 'Dzwonisz lub wysyłasz zdjęcie okna przez WhatsApp. Podajemy orientacyjną cenę.' },
+      { title: 'Termin', text: 'Umawiamy wizytę — zwykle w ciągu 24–48 godzin, także w weekend.' },
+      { title: 'Diagnoza i cena', text: 'Serwisant sprawdza okna i podaje ostateczną cenę, zanim zacznie pracę.' },
+      { title: 'Naprawa z gwarancją', text: 'Większość usterek usuwamy od razu, na miejscu. Na usługę dajemy do 24 miesięcy gwarancji.' },
+    ],
   },
 
   services: {
     eyebrow: 'Usługi',
     title: 'Pełen serwis okien i drzwi',
-    lead: 'PCV i drewno, okna rozwierne, uchylne, dachowe, drzwi balkonowe i tarasowe.',
+    lead: 'PCV i drewno, okna rozwierne, uchylne, dachowe, drzwi balkonowe i tarasowe. Ceny orientacyjne — dokładną podajemy po diagnozie.',
     ask: 'Zapytaj o wycenę',
+    more: 'Szczegóły i cennik',
+    all: 'Pełny cennik',
+    from: 'od',
+    currency: 'zł',
+    custom: 'wycena indywidualna',
     items: {
       adjust: {
         name: 'Regulacja okien i drzwi balkonowych',
@@ -90,6 +119,10 @@ export default {
       shutter: {
         name: 'Naprawa rolet zewnętrznych',
         text: 'Zacinające się lub opadające rolety naprawiamy na miejscu — skuteczna naprawa wydłuża ich żywotność i pozwala uniknąć kosztów wymiany.',
+      },
+      thermo: {
+        name: 'Diagnostyka termowizyjna',
+        text: 'Kamera termowizyjna i anemometr pokazują, gdzie okno traci ciepło i skąd wieje. Otrzymujesz raport z wynikami.',
       },
       roof: {
         name: 'Serwis okien dachowych',
@@ -175,17 +208,8 @@ export default {
     eyebrow: 'Warto wiedzieć',
     title: 'Porady o oknach',
     lead: 'Praktyczne wskazówki dla większego komfortu w domu.',
-    more: 'Czytaj artykuł',
-    items: [
-      {
-        title: 'Rodzaje usterek okien plastikowych i jak im zapobiegać',
-        text: 'Większość awarii okien PCV da się szybko naprawić. Podpowiadamy, jakie usterki zdarzają się najczęściej i jak ich uniknąć.',
-      },
-      {
-        title: 'Tryb zimowy i letni — jak działa sezonowa regulacja okien?',
-        text: 'Nowoczesne okucia pozwalają zmienić siłę docisku skrzydła do ramy. Wyjaśniamy, kiedy i po co przestawiać okna.',
-      },
-    ],
+    more: 'Czytaj poradę',
+    all: 'Wszystkie porady',
   },
 
   faq: {
@@ -194,19 +218,27 @@ export default {
     items: [
       {
         q: 'Na jakim terenie działacie?',
-        a: 'Na terenie całej Wielkopolski — m.in. w Poznaniu, Kaliszu, Pile, Lesznie, Gnieźnie i okolicznych miejscowościach.',
+        a: 'W Poznaniu i na terenie całej Wielkopolski — m.in. w Kaliszu, Pile, Lesznie, Gnieźnie i okolicznych miejscowościach.',
       },
       {
-        q: 'Ile kosztuje wycena?',
-        a: 'Wycena jest bezpłatna. Wystarczy zadzwonić lub wysłać zdjęcia okna przez WhatsApp — podamy cenę i termin.',
+        q: 'Ile kosztuje dojazd i wycena?',
+        a: 'Diagnoza i wycena na miejscu są bezpłatne. Jeśli wycena Ci nie odpowiada, nie płacisz za dojazd ani za diagnozę. Orientacyjne ceny usług znajdziesz w cenniku.',
       },
       {
         q: 'Jak szybko przyjedziecie?',
-        a: 'Większość awarii okien i drzwi balkonowych naprawiamy w dniu zgłoszenia, a drobne problemy — w dogodnym dla Ciebie terminie. Pracujemy codziennie od 8:00 do 20:00.',
+        a: 'Zwykle umawiamy wizytę w ciągu 24–48 godzin. Większość usterek usuwamy podczas jednej wizyty.',
+      },
+      {
+        q: 'Czy pracujecie w weekendy?',
+        a: 'Tak, pracujemy codziennie od 8:00 do 20:00, także w soboty i niedziele.',
+      },
+      {
+        q: 'Ile trwa naprawa okna?',
+        a: 'Proste usterki, takie jak regulacja okuć, wymiana uszczelki czy smarowanie mechanizmów, zajmują zwykle od 30 minut do 2 godzin.',
       },
       {
         q: 'Czy dajecie gwarancję?',
-        a: 'Tak, na wykonane naprawy udzielamy gwarancji do 24 miesięcy.',
+        a: 'Tak, na wykonaną usługę udzielamy gwarancji do 24 miesięcy.',
       },
       {
         q: 'Czy naprawiacie okna drewniane i dachowe?',
@@ -259,6 +291,10 @@ export default {
     cookies: 'Ustawienia cookies',
     photos: 'Zdjęcie tła: Unsplash',
     top: 'Do góry',
+    services: 'Usługi',
+    company: 'Firma',
+    contact: 'Kontakt',
+    privacy: 'Polityka prywatności',
   },
 
   wa: { label: 'Napisz na WhatsApp', hello: 'Dzień dobry! Mam pytanie w sprawie naprawy okna: ' },

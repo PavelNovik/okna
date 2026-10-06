@@ -1,3 +1,5 @@
+import { services as serviceList } from './content/services.js'
+
 // Данные Liwserwis (с liwserwis.com, октябрь 2026). Тексты — в src/i18n/*.js
 // __SITE_URL__ подставляет Vite; при запуске из node (scripts/fetch-images.js) его нет.
 const envSiteUrl = typeof __SITE_URL__ !== 'undefined' ? __SITE_URL__ : ''
@@ -12,8 +14,10 @@ export const brand = {
   whatsapp: '48886227715',
   whatsappDisplay: '+48 886 227 715',
   email: 'liwserwis@gmail.com',
-  // Реквизиты — со «Świadectwa autoryzowanego serwisu» Winkhaus на сайте
+  // Реквизиты: адрес — со «Świadectwa autoryzowanego serwisu» Winkhaus, NIP — из polityki prywatności на сайте.
+  // TODO: сверить с KRS — в политике адрес «ul. Ułańska 15» без номера квартиры, NIP в реестрах не найден
   legalName: 'LIVANS sp. z o.o.',
+  nip: '7792554633',
   street: 'ul. Ułańska 15/93',
   postalCode: '60-748',
   city: 'Poznań',
@@ -49,8 +53,8 @@ export const img = (name, size) => `/images/${name}${size === 'sm' ? '-sm' : ''}
 // Города, перечисленные на сайте («i inne»)
 export const cities = ['Poznań', 'Kalisz', 'Piła', 'Leszno', 'Gniezno']
 
-// Услуги (порядок как на сайте); иконка = id в Icon.jsx; тексты — t.services.items[id]
-export const services = ['adjust', 'glass', 'hinge', 'fittings', 'handle', 'maintenance', 'seal', 'shutter', 'roof']
+// Услуги: порядок и id — из src/content/services.js (страницы услуг); краткие названия на языках — t.services.items[id]
+export const services = serviceList.map((s) => s.id)
 
 // Реализации — фото с liwserwis.com (public/images/<id>.webp); подписи — t.gallery.items[id]
 export const gallery = ['rej1', 'rej2', 'rej3', 'rej4', 'rej5', 'rej6', 'rej7', 'rej8', 'rej9']
@@ -70,11 +74,3 @@ export const brands = [
   { id: 'schuco', name: 'Schüco' },
 ]
 
-// Статьи блога — на текущем сайте
-export const posts = [
-  { img: 'post-faults', href: 'https://liwserwis.com/rodzaje-usterek-okien-plastikowych-i-sposoby-ich-zapobiegania/' },
-  { img: 'post-season', href: 'https://liwserwis.com/tryb-zimowy-i-letni-jak-dziala-sezonowaregulacja-okien/' },
-]
-
-// Разделы в меню (якоря)
-export const navIds = ['about', 'services', 'gallery', 'reviews', 'faq', 'contact']

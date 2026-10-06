@@ -4,7 +4,7 @@ import Icon from './Icon.jsx'
 import SectionHead from './SectionHead.jsx'
 
 export default function About() {
-  const { t } = useLang()
+  const { t, lang, path } = useLang()
   const a = t.about
   return (
     <section className="section" id="about" aria-labelledby="about-title">
@@ -27,6 +27,13 @@ export default function About() {
               </li>
             ))}
           </ul>
+          {lang === 'pl' && path !== '/o-nas/' && (
+            <p className="about__more">
+              <a className="link-arrow" href="/o-nas/">
+                {a.more} <Icon name="arrow" size={18} />
+              </a>
+            </p>
+          )}
         </div>
         <figure className="about__media" data-reveal>
           <img src={img('adjust')} alt={t.services.items.adjust.name} width="793" height="516" loading="lazy" decoding="async" />

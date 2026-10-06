@@ -6,17 +6,8 @@ export const dictionaries = { pl, de }
 export const languages = ['pl', 'de']
 export const defaultLang = 'pl'
 
-// Польский — на корне сайта, немецкий — /de/. Сайт одностраничный: разделы — якоря (#services …)
+// Польский — весь сайт, немецкий — посадочная /de/ (см. src/routes.js)
 export const langPath = (lang) => (lang === defaultLang ? '/' : `/${lang}/`)
-
-export function langFromPath(pathname) {
-  const seg = pathname.split('/')[1]
-  return languages.includes(seg) ? seg : defaultLang
-}
-
-// Для scripts/prerender.js: одна страница на язык
-export const routes = ['home']
-export const routePath = (lang) => langPath(lang)
 
 const LangContext = createContext(null)
 

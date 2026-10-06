@@ -1,11 +1,12 @@
-import { brand, mailLink, navIds, socials, tel, waLink } from '../config.js'
+import { brand, mailLink, socials, tel, waLink } from '../config.js'
+import { services, servicePath } from '../content/services.js'
 import { useLang } from '../i18n/index.jsx'
 import { openCookieSettings } from './CookieConsent.jsx'
 import Icon from './Icon.jsx'
 import Logo from './Logo.jsx'
 
 export default function Footer() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const f = t.footer
   const year = 2026
   return (
@@ -24,16 +25,39 @@ export default function Footer() {
             ))}
           </ul>
         </div>
-        <nav aria-label={t.nav.menu}>
+
+        <nav aria-label={f.services}>
+          <p className="footer__title">{f.services}</p>
           <ul className="footer__nav">
-            {navIds.map((id) => (
-              <li key={id}>
-                <a href={`#${id}`}>{t.nav.items[id]}</a>
+            {services.map((s) => (
+              <li key={s.id}>
+                {/* страницы услуг есть только на польском */}
+                <a href={servicePath(s)} hrefLang={lang === 'pl' ? undefined : 'pl'}>
+                  {t.services.items[s.id].name}
+                </a>
               </li>
             ))}
           </ul>
         </nav>
+
+        <nav aria-label={f.company}>
+          <p className="footer__title">{f.company}</p>
+          <ul className="footer__nav">
+            {t.nav.links.map(([href, label]) => (
+              <li key={href}>
+                <a href={href}>{label}</a>
+              </li>
+            ))}
+            <li>
+              <a href="/polityka-prywatnosci/" hrefLang={lang === 'pl' ? undefined : 'pl'}>
+                {f.privacy}
+              </a>
+            </li>
+          </ul>
+        </nav>
+
         <div className="footer__contact">
+          <p className="footer__title">{f.contact}</p>
           <p>
             <a href={tel}>{brand.phone}</a>
           </p>
@@ -47,7 +71,11 @@ export default function Footer() {
           </p>
           <p>{t.contact.hoursValue}</p>
           <p className="footer__ids">
-            {brand.legalName} · {brand.street}, {brand.postalCode} {brand.city}
+            {brand.legalName}
+            <br />
+            {brand.street}, {brand.postalCode} {brand.city}
+            <br />
+            NIP {brand.nip}
           </p>
         </div>
       </div>

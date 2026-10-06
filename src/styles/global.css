@@ -1627,7 +1627,7 @@ main:focus {
 .reviews__more small {
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.75);
+  background: rgb(255 255 255 / 0.95);
   color: var(--muted);
 }
 

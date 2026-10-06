@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { brand, navIds, tel } from '../config.js'
+import { brand, tel } from '../config.js'
 import { langPath, useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
 import LangSwitcher from './LangSwitcher.jsx'
 import Logo from './Logo.jsx'
 
 export default function Header() {
-  const { t, lang } = useLang()
+  const { t, lang, path } = useLang()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -20,16 +20,20 @@ export default function Header() {
   return (
     <header className={`header${open ? ' is-open' : ''}`}>
       <div className="header__inner">
-        <a className="header__logo" href={langPath(lang)} aria-label="Liwserwis">
+        <a className="header__logo" href={langPath(lang)} aria-label={`${brand.name} — ${t.nav.home}`}>
           <Logo />
         </a>
 
         <nav className="nav" id="site-nav" aria-label={t.nav.menu}>
           <ul>
-            {navIds.map((id) => (
-              <li key={id}>
-                <a href={`#${id}`} onClick={() => setOpen(false)}>
-                  {t.nav.items[id]}
+            {t.nav.links.map(([href, label]) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  aria-current={href === path ? 'page' : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  {label}
                 </a>
               </li>
             ))}

@@ -8,19 +8,142 @@
   "headers": [
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/images/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
+    },
+    {
+      "source": "/brands/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/service/",
+      "destination": "/uslugi/",
+      "permanent": true
+    },
+    {
+      "source": "/service/regulacja-okien-i-drzwi-balkolnowych/",
+      "destination": "/uslugi/regulacja-okien/",
+      "permanent": true
+    },
+    {
+      "source": "/service/wymiana-uszczelek-okiennych-i-drzwi-balkonowych/",
+      "destination": "/uslugi/wymiana-uszczelek/",
+      "permanent": true
+    },
+    {
+      "source": "/service/wymiana-pakietu-szybowegow-oknie/",
+      "destination": "/uslugi/wymiana-szyby-zespolonej/",
+      "permanent": true
+    },
+    {
+      "source": "/service/naprawa-i-wymiana-okuc-w-oknach-i-drzwiach-pcv/",
+      "destination": "/uslugi/naprawa-okuc/",
+      "permanent": true
+    },
+    {
+      "source": "/service/wymiana-zawiasow-w-oknach-i-drzwiach-pcv/",
+      "destination": "/uslugi/wymiana-zawiasow/",
+      "permanent": true
+    },
+    {
+      "source": "/service/wymiana-klamek-w-oknach-i-drzwiach-pcv/",
+      "destination": "/uslugi/wymiana-klamek/",
+      "permanent": true
+    },
+    {
+      "source": "/service/konserwacja-i-planowy-przeglad-okien-i-drzwi-pcv/",
+      "destination": "/uslugi/konserwacja-okien/",
+      "permanent": true
+    },
+    {
+      "source": "/service/naprawa-rolet-zewnetrznych/",
+      "destination": "/uslugi/naprawa-rolet-zewnetrznych/",
+      "permanent": true
+    },
+    {
+      "source": "/service/serwis-okien-dachowych/",
+      "destination": "/uslugi/serwis-okien-dachowych/",
+      "permanent": true
+    },
+    {
+      "source": "/rodzaje-usterek-okien-plastikowych-i-sposoby-ich-zapobiegania/",
+      "destination": "/porady/rodzaje-usterek-okien-pcv/",
+      "permanent": true
+    },
+    {
+      "source": "/tryb-zimowy-i-letni-jak-dziala-sezonowaregulacja-okien/",
+      "destination": "/porady/tryb-zimowy-i-letni-okien/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy/",
+      "destination": "/polityka-prywatnosci/",
+      "permanent": true
+    },
+    {
+      "source": "/thank-you/",
+      "destination": "/kontakt/",
+      "permanent": true
+    },
+    {
+      "source": "/category/:slug*",
+      "destination": "/porady/",
+      "permanent": true
+    },
+    {
+      "source": "/author/:slug*",
+      "destination": "/o-nas/",
+      "permanent": true
+    },
+    {
+      "source": "/feed/",
+      "destination": "/porady/",
+      "permanent": true
     }
   ]
 }

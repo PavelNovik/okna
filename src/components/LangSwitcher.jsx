@@ -1,7 +1,8 @@
 import { dictionaries, languages, langPath, useLang } from '../i18n/index.jsx'
 
+// Обычные ссылки: PL — весь сайт, DE — посадочная /de/
 export default function LangSwitcher() {
-  const { lang, setLang, t } = useLang()
+  const { lang, t } = useLang()
   return (
     <nav className="lang" aria-label={t.nav.lang}>
       <ul>
@@ -14,10 +15,6 @@ export default function LangSwitcher() {
               aria-current={l === lang ? 'true' : undefined}
               aria-label={dictionaries[l].name}
               className={l === lang ? 'is-active' : ''}
-              onClick={(e) => {
-                e.preventDefault()
-                setLang(l)
-              }}
             >
               {dictionaries[l].label}
             </a>
