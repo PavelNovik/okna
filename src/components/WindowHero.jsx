@@ -2,7 +2,7 @@ import { brand, cities, tel, waLink } from '../config.js'
 import { useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
 
-// Hero «пролёт через окно»: стена с проёмом и ПВХ-рамой поверх фиксированного пейзажа (.scene в App).
+// Hero «пролёт через окно»: стена с вырезом-маской и ПВХ-рамой поверх фиксированного пейзажа (.scene в App).
 // Прогресс прокрутки hero — CSS-переменная --hp на <html> (useEffectsFx): сначала поворачивается ручка
 // и створки открываются внутрь, затем комната увеличивается от центра окна — и мы «вылетаем» наружу.
 export default function WindowHero() {
@@ -12,6 +12,7 @@ export default function WindowHero() {
     <section className="hero" id="top" aria-labelledby="hero-title">
       <div className="hero__stage">
         <div className="room" aria-hidden="true">
+          <div className="room__wall" />
           <div className="win">
             <div className="win__frame">
               <div className="win__sash win__sash--l">

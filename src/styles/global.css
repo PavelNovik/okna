@@ -517,46 +517,67 @@ main:focus {
   height: 240svh;
 }
 
+/* Размеры окна задаются в единицах контейнера (cqw/cqh = ширина/высота сцены).
+   Пролёт — не transform: scale всей комнаты (гигантский слой мерцал при прокрутке назад),
+   а прямое изменение размера проёма: маска стены и рама считаются из одних и тех же --w/--h,
+   поэтому всегда совпадают, а стена остаётся слоем размером с экран. */
 .hero__stage {
-  --wx: 70%;
-  --wy: 53%;
-  --ww: min(31vw, 470px, 60svh);
+  --cx: 70cqw;
+  --cy: 53cqh;
+  --ww: min(31cqw, 470px, 60cqh);
+  --s: calc(1 + var(--zoom) * var(--zoom) * 9);
+  --w: calc(var(--ww) * var(--s));
+  --h: calc(var(--w) * 1.25);
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
+  container-type: size;
 }
 
 .room {
   position: absolute;
   inset: 0;
-  transform-origin: var(--wx) var(--wy);
-  transform: scale(calc(1 + var(--zoom) * var(--zoom) * 9));
   opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.78) * 5), 1));
-  will-change: transform, opacity;
   pointer-events: none;
 }
 
-/* проём: всё вокруг закрашено «стеной» огромной тенью, внутри — прозрачно (видно пейзаж) */
+/* стена с прямоугольным вырезом под окно */
+.room__wall {
+  position: absolute;
+  inset: 0;
+  background: var(--wall);
+  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%, calc(var(--w) - 2px) calc(var(--h) - 2px);
+  mask-size: 100% 100%, calc(var(--w) - 2px) calc(var(--h) - 2px);
+  -webkit-mask-position: 0 0, calc(var(--cx) - var(--w) / 2 + 1px) calc(var(--cy) - var(--h) / 2 + 1px);
+  mask-position: 0 0, calc(var(--cx) - var(--w) / 2 + 1px) calc(var(--cy) - var(--h) / 2 + 1px);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
 .win {
   position: absolute;
-  left: var(--wx);
-  top: var(--wy);
-  width: var(--ww);
-  aspect-ratio: 4 / 5;
-  translate: -50% -50%;
+  left: calc(var(--cx) - var(--w) / 2);
+  top: calc(var(--cy) - var(--h) / 2);
+  width: var(--w);
+  height: var(--h);
   container-type: size;
+  /* откос проёма — узкое кольцо вокруг рамы */
   box-shadow:
-    0 0 0 calc(var(--ww) * 0.05) #193359,
-    0 0 0 calc(var(--ww) * 0.055) #0f2240,
-    0 0 0 300vmax var(--wall);
+    0 0 0 calc(var(--w) * 0.05) #193359,
+    0 0 0 calc(var(--w) * 0.055) #0f2240;
+  opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.55) * 3), 1));
 }
 
 /* откос: тень сверху и слева — глубина проёма */
 .win::before {
   content: '';
   position: absolute;
-  inset: calc(var(--ww) * -0.05);
+  inset: calc(var(--w) * -0.05);
   background:
     linear-gradient(180deg, rgb(0 0 0 / 0.35), transparent 14%),
     linear-gradient(90deg, rgb(0 0 0 / 0.25), transparent 10%);
@@ -571,7 +592,7 @@ main:focus {
   border-color: #fbfcfd #e3e8ef #d7dee7 #eef2f6;
   border-radius: 0.8cqw;
   box-shadow: inset 0 0 0 0.35cqw rgb(15 30 50 / 0.18), 0 1cqw 3cqw rgb(0 0 0 / 0.35);
-  perspective: 1400px;
+  perspective: 300cqw;
 }
 
 .win__sash {
@@ -582,8 +603,6 @@ main:focus {
   box-shadow:
     0 0 0 0.3cqw rgb(15 30 50 / 0.22),
     inset 0 0 0 0.7cqw #2b3442;
-  transition: transform 0.12s linear;
-  backface-visibility: visible;
 }
 
 .win__sash--l {
@@ -645,7 +664,7 @@ main:focus {
   position: absolute;
   left: -9%;
   right: -9%;
-  top: calc(100% + var(--ww) * 0.04);
+  top: calc(100% + 4cqw);
   height: 4cqw;
   border-radius: 0.6cqw;
   background: linear-gradient(180deg, #f6f8fb 0%, #d7dee8 70%, #b9c3d0 100%);
@@ -655,23 +674,23 @@ main:focus {
 /* свет из окна на стене */
 .room__glow {
   position: absolute;
-  left: var(--wx);
-  top: var(--wy);
+  left: calc(var(--cx) - var(--ww) * 1.7);
+  top: calc(var(--cy) - var(--ww) * 1.7);
   width: calc(var(--ww) * 3.4);
-  aspect-ratio: 1;
-  translate: -50% -50%;
+  height: calc(var(--ww) * 3.4);
   border-radius: 50%;
   background: radial-gradient(closest-side, rgb(255 196 120 / 0.22), rgb(255 170 90 / 0.07) 55%, transparent);
   mix-blend-mode: screen;
+  opacity: calc(1 - var(--zoom) * 2);
 }
 
 /* виньетка по углам комнаты — уходит во время пролёта */
-.hero__stage::before {
+.room::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(ellipse at var(--wx) var(--wy), transparent 30%, rgb(2 8 20 / 0.55) 100%);
+  background: radial-gradient(ellipse at var(--cx) var(--cy), transparent 30%, rgb(2 8 20 / 0.55) 100%);
   opacity: calc(1 - var(--zoom));
   pointer-events: none;
 }
@@ -816,8 +835,8 @@ main:focus {
 
 @media (max-width: 1100px) {
   .hero__stage {
-    --wx: 74%;
-    --ww: min(28vw, 60svh);
+    --cx: 74cqw;
+    --ww: min(28cqw, 60cqh);
   }
 
   .hero__content > * {
@@ -827,9 +846,9 @@ main:focus {
 
 @media (max-width: 860px) {
   .hero__stage {
-    --wx: 50%;
-    --wy: 23%;
-    --ww: min(40vw, 26svh, 240px);
+    --cx: 50cqw;
+    --cy: 23cqh;
+    --ww: min(40cqw, 26cqh, 240px);
   }
 
   .hero__content {
@@ -876,8 +895,8 @@ main:focus {
 
 @media (max-height: 700px) and (max-width: 860px) {
   .hero__stage {
-    --wy: 23%;
-    --ww: min(40vw, 20svh);
+    --cy: 23cqh;
+    --ww: min(40cqw, 20cqh);
   }
 
   .hero__lead {
