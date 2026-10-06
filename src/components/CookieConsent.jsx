@@ -46,7 +46,8 @@ export default function CookieConsent() {
   useEffect(() => {
     const stored = getConsent()
     if (stored) setPrefs({ analytics: !!stored.analytics, marketing: !!stored.marketing })
-    else setBanner(true)
+    // показываем после загрузки шрифтов — иначе баннер меняет высоту при подмене шрифта (сдвиг макета, CLS)
+    else (document.fonts?.ready ?? Promise.resolve()).then(() => setBanner(true))
 
     const open = () => {
       const s = getConsent()

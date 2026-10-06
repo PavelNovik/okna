@@ -50,7 +50,7 @@ export default function App({ path }) {
   return (
     <LangProvider value={{ lang: route.lang, path: route.path, ask, preset }}>
       <SkipLink />
-      {/* вид на Познань за окном — только на главной (hero «пролёт через окно») */}
+      {/* полноэкранный вид на Познань — в него «влетаем» в конце hero (только главная) */}
       {route.page === 'home' && (
         <div className="scene" aria-hidden="true">
           <img
@@ -59,7 +59,7 @@ export default function App({ path }) {
             srcSet={`${img('view', 'sm')} 1100w, ${img('view')} 2400w`}
             sizes="100vw"
             alt=""
-            fetchPriority="high"
+            fetchPriority="low"
           />
         </div>
       )}

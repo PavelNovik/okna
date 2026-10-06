@@ -3,64 +3,151 @@ import { brand, tel } from '../config.js'
 import { useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
 
-// Hero «пролёт через окно»: стена с вырезом-маской и ПВХ-рамой поверх фиксированного вида на Познань
-// (.scene в App). Прогресс прокрутки hero — CSS-переменная --hp на <html> (useEffectsFx): ручка
-// поворачивается, створки открываются внутрь, окно растёт — и мы «вылетаем» в вид на Stary Rynek.
-// Подача — как в референсе (Aurelia Residences): антиква капителью, тонкие линии, золотая кнопка.
+// Hero «окно открывается»: раскадровка видео (scripts/window/*) — створки распахиваются в вид на Познань.
+// Кадры рисуются в <canvas> по прогрессу прокрутки (--hp, как в useEffectsFx): 0…OPEN_END — открытие,
+// дальше CSS (--zoom) увеличивает панель от центра проёма и растворяет её в полноэкранном виде (.scene в App).
+// Первый кадр — обычная <picture> (видна сразу, это LCP), canvas появляется поверх, когда кадры загружены.
+export const FRAMES = 62
+export const OPEN_END = 0.6
+const frameUrl = (size, i, ext) => `/window/${size}/${String(i).padStart(2, '0')}.${ext}`
+
 export default function WindowHero() {
   const { t } = useLang()
   const h = t.hero
   const stage = useRef(null)
+  const film = useRef(null)
+  const canvas = useRef(null)
 
-  // На телефонах текст hero прижат к низу, а окно — сверху. Высота текста зависит от ширины экрана,
-  // поэтому размер и положение окна считаем по реальному свободному месту между шапкой и текстом.
+  // Кадры по прокрутке
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const el = stage.current
-    const fit = () => {
-      const mobile = window.matchMedia('(max-width: 860px)').matches
-      const content = el.querySelector('.hero__content')
-      const first = content.firstElementChild
-      if (!mobile || !first) {
-        el.style.removeProperty('--cy')
-        el.style.removeProperty('--ww')
-        return
-      }
-      const header = document.querySelector('.header')
-      const top = (header ? header.offsetHeight : 64) + 20 // от низа шапки
-      const bottom = content.offsetTop + first.offsetTop - 26 // до первой строки текста
-      // высота окна 1.25·w + подоконник ≈ 0.12·w
-      const ww = Math.max(72, Math.min((bottom - top) / 1.37, el.clientWidth * 0.46, 250))
-      const cy = top + (bottom - top - ww * 1.37) / 2 + (ww * 1.25) / 2
-      el.style.setProperty('--ww', `${ww.toFixed(1)}px`)
-      el.style.setProperty('--cy', `${cy.toFixed(1)}px`)
+    const box = film.current
+    const cv = canvas.current
+    const ctx = cv.getContext('2d')
+    const hero = el.parentElement
+    const frames = new Array(FRAMES)
+    let cancelled = false
+    let raf = 0
+    let shown = -1
+
+    const progress = () => {
+      const span = hero.offsetHeight - window.innerHeight
+      return span > 0 ? Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / span)) : 0
     }
-    fit()
-    const ro = new ResizeObserver(fit)
-    ro.observe(el)
-    ro.observe(el.querySelector('.hero__content'))
-    return () => ro.disconnect()
+    const nearest = (i) => {
+      for (let d = 0; d < FRAMES; d++) {
+        if (frames[i - d]) return i - d
+        if (frames[i + d]) return i + d
+      }
+      return -1
+    }
+    const draw = () => {
+      raf = 0
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const w = Math.round(box.clientWidth * dpr), hgt = Math.round(box.clientHeight * dpr)
+      if (cv.width !== w || cv.height !== hgt) {
+        cv.width = w
+        cv.height = hgt
+        shown = -1
+      }
+      const f = (Math.min(1, progress() / OPEN_END)) * (FRAMES - 1)
+      const i0 = nearest(Math.floor(f))
+      if (i0 < 0) return
+      const key = i0 + (f - Math.floor(f)) * 0.999
+      if (key === shown) return
+      shown = key
+      // как object-fit: cover — без искажений, если пропорции панели отличаются от кадра
+      const img0 = frames[i0]
+      const sc = Math.max(w / img0.naturalWidth, hgt / img0.naturalHeight)
+      const dw = img0.naturalWidth * sc, dh = img0.naturalHeight * sc
+      const dx = (w - dw) / 2, dy = (hgt - dh) / 2
+      ctx.globalAlpha = 1
+      ctx.drawImage(img0, dx, dy, dw, dh)
+      // плавный переход к следующему кадру, если он уже загружен
+      const i1 = Math.floor(f) + 1
+      const frac = f - Math.floor(f)
+      if (i0 === Math.floor(f) && frac > 0.02 && frames[i1]) {
+        ctx.globalAlpha = frac
+        ctx.drawImage(frames[i1], dx, dy, dw, dh)
+        ctx.globalAlpha = 1
+      }
+      box.classList.add('is-live')
+    }
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(draw)
+    }
+
+    ;(async () => {
+      // кадры грузим после загрузки страницы и в простое — не мешаем первому экрану (LCP)
+      if (document.readyState !== 'complete') await new Promise((r) => window.addEventListener('load', r, { once: true }))
+      await new Promise((r) => (window.requestIdleCallback ? requestIdleCallback(r, { timeout: 1200 }) : setTimeout(r, 300)))
+      if (cancelled) return
+      // формат и размер — те же, что браузер выбрал для первого кадра в <picture> (AVIF/WebP, l/s)
+      const poster = box.querySelector('.film__poster')
+      if (!poster.complete) await new Promise((r) => poster.addEventListener('load', r, { once: true }))
+      const chosen = poster.currentSrc || poster.src
+      const ext = chosen.endsWith('.avif') ? 'avif' : 'webp'
+      const size = chosen.includes('/s/') ? 's' : 'l'
+      // порядок загрузки: первый, последний, затем «прореживание» — чтобы анимация работала сразу, уточняясь
+      const order = [0, FRAMES - 1]
+      for (const step of [16, 8, 4, 2, 1])
+        for (let i = 0; i < FRAMES; i += step) if (!order.includes(i)) order.push(i)
+      let next = 0
+      const worker = async () => {
+        while (!cancelled && next < order.length) {
+          const i = order[next++]
+          const img = new Image()
+          img.decoding = 'async'
+          img.src = frameUrl(size, i, ext)
+          try {
+            await img.decode()
+          } catch {
+            continue
+          }
+          if (cancelled) return
+          frames[i] = img
+          shown = -1
+          schedule()
+        }
+      }
+      await Promise.all([worker(), worker(), worker(), worker()])
+    })()
+
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      cancelled = true
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      cancelAnimationFrame(raf)
+    }
   }, [])
 
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
       <div className="hero__stage" ref={stage}>
-        <div className="room" aria-hidden="true">
-          <div className="room__wall" />
-          <div className="win">
-            <div className="win__frame">
-              <div className="win__sash win__sash--l">
-                <div className="win__glass" />
-              </div>
-              <div className="win__sash win__sash--r">
-                <div className="win__glass" />
-                <span className="win__handle">
-                  <i />
-                </span>
-              </div>
-            </div>
-            <div className="win__sill" />
-          </div>
-          <div className="room__glow" />
+        <div className="hero__bg" aria-hidden="true" />
+        <div className="film" ref={film} aria-hidden="true">
+          <picture>
+            <source
+              type="image/avif"
+              media="(max-width: 860px)"
+              srcSet={frameUrl('s', 0, 'avif')}
+            />
+            <source type="image/avif" srcSet={frameUrl('l', 0, 'avif')} />
+            <source type="image/webp" media="(max-width: 860px)" srcSet={frameUrl('s', 0, 'webp')} />
+            <img
+              className="film__poster"
+              src={frameUrl('l', 0, 'webp')}
+              alt=""
+              width="720"
+              height="1185"
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
+          <canvas className="film__canvas" ref={canvas} />
         </div>
 
         <div className="hero__content container">

@@ -41,7 +41,7 @@ export default function Dock() {
       if (hero) {
         const span = hero.offsetHeight - window.innerHeight
         const p = span > 0 ? Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / span)) : 1
-        stage = p < 0.07 ? 0 : p < 0.42 ? 1 : 2
+        stage = p < 0.08 ? 0 : p < 0.62 ? 1 : 2 // как в WindowHero: открытие до 0.6
       }
       setState((s) => (s.index === index && s.stage === stage && s.list.length === list.length ? s : { list, index, stage }))
     }

@@ -25,8 +25,6 @@ const page = (route) =>
     .replace(/<html lang="[^"]*">/, `<html lang="${route.lang}">`)
     .replace('<!--app-head-->', renderHead(route))
     .replace('<div id="root"></div>', `<div id="root">${render(route.path)}</div>`)
-    // фон-пейзаж на главной грузится сразу (LCP), на внутренних страницах preload не нужен
-    .replace(route.page === 'home' ? /^$/ : /\s*<link rel="preload" href="\/images\/view[^>]*>/g, '')
 
 for (const route of routes) {
   const dir = path.join(dist, route.path)

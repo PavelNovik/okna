@@ -627,188 +627,66 @@ main:focus {
   }
 }
 
-/* ---------- Hero: окно ---------- */
+/* ---------- Hero: окно открывается (кадры видео в canvas, WindowHero.jsx) ---------- */
 .hero {
   position: relative;
-  height: 240svh;
+  height: 300svh;
 }
 
-/* Размеры окна задаются в единицах контейнера (cqw/cqh = ширина/высота сцены).
-   Пролёт — не transform: scale всей комнаты (гигантский слой мерцал при прокрутке назад),
-   а прямое изменение размера проёма: маска стены и рама считаются из одних и тех же --w/--h,
-   поэтому всегда совпадают, а стена остаётся слоем размером с экран. */
 .hero__stage {
-  --cx: 70cqw;
-  --cy: 53cqh;
-  --ww: min(31cqw, 470px, 60cqh);
-  --s: calc(1 + var(--zoom) * var(--zoom) * 9);
-  --w: calc(var(--ww) * var(--s));
-  --h: calc(var(--w) * 1.25);
+  --fx: 68%; /* центр панели с видео по горизонтали */
   position: sticky;
   top: 0;
   height: 100svh;
   overflow: hidden;
-  container-type: size;
 }
 
-.room {
+/* стена комнаты вокруг панели — цвета сняты с краёв кадров (scripts/window/export.mjs) */
+.hero__bg {
   position: absolute;
   inset: 0;
-  opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.78) * 5), 1));
-  pointer-events: none;
-}
-
-/* стена с прямоугольным вырезом под окно */
-.room__wall {
-  position: absolute;
-  inset: 0;
-  background: var(--wall);
-  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%, calc(var(--w) - 2px) calc(var(--h) - 2px);
-  mask-size: 100% 100%, calc(var(--w) - 2px) calc(var(--h) - 2px);
-  -webkit-mask-position: 0 0, calc(var(--cx) - var(--w) / 2 + 1px) calc(var(--cy) - var(--h) / 2 + 1px);
-  mask-position: 0 0, calc(var(--cx) - var(--w) / 2 + 1px) calc(var(--cy) - var(--h) / 2 + 1px);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-}
-
-.win {
-  position: absolute;
-  left: calc(var(--cx) - var(--w) / 2);
-  top: calc(var(--cy) - var(--h) / 2);
-  width: var(--w);
-  height: var(--h);
-  container-type: size;
-  /* откос проёма — узкое кольцо вокруг рамы */
-  box-shadow:
-    0 0 0 calc(var(--w) * 0.05) #193359,
-    0 0 0 calc(var(--w) * 0.055) #0f2240;
-  opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.55) * 3), 1));
-}
-
-/* откос: тень сверху и слева — глубина проёма */
-.win::before {
-  content: '';
-  position: absolute;
-  inset: calc(var(--w) * -0.05);
   background:
-    linear-gradient(180deg, rgb(0 0 0 / 0.35), transparent 14%),
-    linear-gradient(90deg, rgb(0 0 0 / 0.25), transparent 10%);
-  pointer-events: none;
+    radial-gradient(ellipse 60% 70% at var(--fx) 50%, transparent 40%, rgb(8 12 20 / 0.35) 100%),
+    linear-gradient(180deg, rgb(35 46 63) 0%, rgb(29 38 54) 12%, rgb(24 31 41) 30%, rgb(26 33 45) 50%, rgb(27 34 48) 70%, rgb(29 37 53) 90%, rgb(27 35 51) 100%);
+  /* переход «через затемнение»: сначала гаснет окно (.film), потом стена уходит и проявляется полный вид —
+     так два разных кадра Старого Рынка (в проёме и на весь экран) не накладываются */
+  opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.8) * 6.5), 1));
 }
 
-.win__frame {
+/* панель с кадрами: края растушёваны в цвет стены; при пролёте растёт от центра проёма */
+.film {
+  position: absolute;
+  top: 0;
+  left: var(--fx);
+  height: 100%;
+  aspect-ratio: 960 / 1580;
+  translate: -50% 0;
+  transform-origin: 50% 53%;
+  transform: scale(calc(1 + var(--zoom) * var(--zoom) * 6));
+  opacity: calc(1 - clamp(0, calc((var(--zoom) - 0.68) * 7), 1));
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+  mask-composite: intersect;
+  will-change: transform, opacity;
+}
+
+.film__poster,
+.film__canvas {
   position: absolute;
   inset: 0;
-  display: flex;
-  border: 4.6cqw solid #f1f4f8;
-  border-color: #fbfcfd #e3e8ef #d7dee7 #eef2f6;
-  border-radius: 0.8cqw;
-  box-shadow: inset 0 0 0 0.35cqw rgb(15 30 50 / 0.18), 0 1cqw 3cqw rgb(0 0 0 / 0.35);
-  perspective: 300cqw;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.win__sash {
-  position: relative;
-  flex: 1;
-  border: 4.2cqw solid #fdfdfe;
-  border-color: #ffffff #e8edf3 #dde3ea #f3f6f9;
-  box-shadow:
-    0 0 0 0.3cqw rgb(15 30 50 / 0.22),
-    inset 0 0 0 0.7cqw #2b3442;
+.film__canvas {
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 
-.win__sash--l {
-  transform-origin: left center;
-  transform: rotateY(calc(var(--open) * -82deg));
-}
-
-.win__sash--r {
-  transform-origin: right center;
-  transform: rotateY(calc(var(--open) * 82deg));
-}
-
-.win__glass {
-  position: absolute;
-  inset: 0.7cqw;
-  background:
-    linear-gradient(
-      115deg,
-      transparent 28%,
-      rgb(255 255 255 / 0.28) 36%,
-      rgb(255 255 255 / 0.06) 44%,
-      transparent 52%,
-      rgb(255 255 255 / 0.12) 62%,
-      transparent 68%
-    ),
-    linear-gradient(180deg, rgb(190 220 255 / 0.1), rgb(160 200 255 / 0.16));
-  background-size: 260% 100%, 100% 100%;
-  background-position: calc(40% + var(--mxn, 0) * 80%) 0, 0 0;
-}
-
-/* ручка на правой створке у центрального притвора */
-.win__handle {
-  position: absolute;
-  left: -3.6cqw;
-  top: 50%;
-  width: 3cqw;
-  height: 9cqw;
-  translate: 0 -50%;
-  border-radius: 1.5cqw;
-  background: linear-gradient(90deg, #ffffff, #dfe5ec);
-  box-shadow: 0 0.4cqw 1cqw rgb(0 0 0 / 0.3);
-}
-
-.win__handle i {
-  position: absolute;
-  left: 50%;
-  top: 2.6cqw;
-  width: 2.2cqw;
-  height: 13cqw;
-  margin-left: -1.1cqw;
-  border-radius: 1.1cqw;
-  background: linear-gradient(90deg, #ffffff, #d5dce5);
-  box-shadow: 0 0.6cqw 1.2cqw rgb(0 0 0 / 0.35);
-  transform-origin: 50% 1.1cqw;
-  transform: rotate(calc(var(--handle) * -90deg));
-}
-
-.win__sill {
-  position: absolute;
-  left: -9%;
-  right: -9%;
-  top: calc(100% + 4cqw);
-  height: 4cqw;
-  border-radius: 0.6cqw;
-  background: linear-gradient(180deg, #f6f8fb 0%, #d7dee8 70%, #b9c3d0 100%);
-  box-shadow: 0 2.4cqw 4cqw rgb(0 0 0 / 0.5);
-}
-
-/* свет из окна на стене */
-.room__glow {
-  position: absolute;
-  left: calc(var(--cx) - var(--ww) * 1.7);
-  top: calc(var(--cy) - var(--ww) * 1.7);
-  width: calc(var(--ww) * 3.4);
-  height: calc(var(--ww) * 3.4);
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 196 120 / 0.22), rgb(255 170 90 / 0.07) 55%, transparent);
-  mix-blend-mode: screen;
-  opacity: calc(1 - var(--zoom) * 2);
-}
-
-/* виньетка по углам комнаты — уходит во время пролёта */
-.room::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: radial-gradient(ellipse at var(--cx) var(--cy), transparent 30%, rgb(2 8 20 / 0.55) 100%);
-  opacity: calc(1 - var(--zoom));
-  pointer-events: none;
+.film.is-live .film__canvas {
+  opacity: 1;
 }
 
 /* backdrop-filter делает шапку контейнером для fixed-потомков — у открытого меню его убираем,
@@ -831,8 +709,9 @@ main:focus {
   padding-top: calc(var(--util-h) + var(--header-h) + 16px);
   padding-bottom: 72px;
   color: #fff;
-  opacity: calc(1 - clamp(0, calc(var(--hp, 0) * 5 - 0.15), 1));
-  transform: translateY(calc(var(--hp, 0) * -140px));
+  /* текст уходит, когда окно почти открыто */
+  opacity: calc(1 - clamp(0, calc((var(--hp, 0) - 0.3) * 5), 1));
+  transform: translateY(calc(clamp(0, calc(var(--hp, 0) - 0.3), 1) * -200px));
 }
 
 .hero__content > * {
@@ -926,8 +805,7 @@ main:focus {
 
 @media (max-width: 1100px) {
   .hero__stage {
-    --cx: 74cqw;
-    --ww: min(28cqw, 60cqh);
+    --fx: 72%;
   }
 
   .hero__content > * {
@@ -936,14 +814,32 @@ main:focus {
 }
 
 @media (max-width: 860px) {
+  /* телефон: колонка «шапка → панель с видео на всё свободное место → текст» (без JS, без сдвигов макета) */
   .hero__stage {
-    --cx: 50cqw;
-    --cy: 23cqh;
-    --ww: min(40cqw, 26cqh, 240px);
+    display: flex;
+    flex-direction: column;
+    padding-top: calc(var(--util-h) + var(--header-h) - 6px);
+  }
+
+  .film {
+    position: relative;
+    top: auto;
+    left: auto;
+    translate: none;
+    flex: 1 1 0;
+    min-height: 150px;
+    max-width: 100%;
+    height: auto;
+    align-self: center;
+    /* шире кадра: canvas обрезает потолок и пол (как cover) — окно крупнее */
+    aspect-ratio: 0.8;
   }
 
   .hero__content {
-    justify-content: flex-end;
+    flex: none;
+    height: auto;
+    justify-content: flex-start;
+    padding-top: 6px;
     padding-bottom: 98px;
   }
 
@@ -962,7 +858,7 @@ main:focus {
 
   .hero__lead {
     display: -webkit-box;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin-top: 14px;
@@ -979,7 +875,12 @@ main:focus {
 
   .hero__meta {
     gap: 6px 18px;
-    margin-top: 18px;
+    margin-top: 16px;
+  }
+
+  /* на телефоне из «меты» — только цена: место для окна */
+  .hero__meta li:not(:first-child) {
+    display: none;
   }
 
   .hero__scroll {

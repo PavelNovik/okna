@@ -1,5 +1,26 @@
 /* Liwserwis — «синий час над Познанью» по мотивам референса (Aurelia Residences, Pinterest):
    ночной синий, слоновая кость, приглушённое золото; антиква капителью, прямые углы, тонкие линии */
+/* Запасной шрифт с метриками Cormorant: пока грузится антиква, заголовки рисуются Times той же ширины,
+   и при подмене шрифта строки не переносятся иначе (без сдвига макета, CLS). Коэффициент измерен в браузере. */
+@font-face {
+  font-family: 'Cormorant Fallback';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif');
+  size-adjust: 97%;
+  ascent-override: 92%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+
+/* то же для Inter (описание, кнопки, меню): Arial с метриками Inter */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans');
+  size-adjust: 107.4%;
+  ascent-override: 90.2%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
 :root {
   color-scheme: light;
 
@@ -29,8 +50,8 @@
   --blur: blur(16px) saturate(140%);
   --shadow: 0 30px 70px -40px rgb(10 22 38 / 0.55);
 
-  --font-serif: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Cormorant Fallback', Georgia, serif;
+  --font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --container: 1240px;
   --gutter: clamp(20px, 4vw, 48px);
@@ -38,8 +59,7 @@
   --header-h: 76px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  /* Фазы hero из --hp (0…1, ставит useEffectsFx): ручка → створки → пролёт */
-  --handle: clamp(0, calc((var(--hp, 0) - 0.01) / 0.07), 1);
-  --open: clamp(0, calc((var(--hp, 0) - 0.07) / 0.28), 1);
-  --zoom: clamp(0, calc((var(--hp, 0) - 0.3) / 0.62), 1);
+  /* Пролёт сквозь открытое окно: --hp (0…1, ставит useEffectsFx) 0…0.6 — кадры открытия (WindowHero),
+     0.62…0.95 — увеличение панели и растворение в полноэкранном виде */
+  --zoom: clamp(0, calc((var(--hp, 0) - 0.62) / 0.33), 1);
 }
