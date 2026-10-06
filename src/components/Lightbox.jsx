@@ -25,13 +25,42 @@ export default function Lightbox({ items, index, onChange, labels }) {
 
   const item = open ? items[index] : null
   const step = (d) => onChange((index + d + items.length) % items.length)
+
+  // Свайп влево/вправо на телефоне — следующее/предыдущее фото
+  const touch = useRef(null)
+  const swiped = useRef(false) // после свайпа браузер может прислать click по фону — не закрываем
+  const onTouchStart = (e) => {
+    const p = e.touches[0]
+    touch.current = { x: p.clientX, y: p.clientY }
+    swiped.current = false
+  }
+  const onTouchEnd = (e) => {
+    const start = touch.current
+    touch.current = null
+    if (!start) return
+    const p = e.changedTouches[0]
+    const dx = p.clientX - start.x
+    const dy = p.clientY - start.y
+    if (Math.abs(dx) > 10 || Math.abs(dy) > 10) swiped.current = true
+    if (items.length > 1 && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1)
+  }
+  const onBackdropClick = (e) => {
+    if (swiped.current) {
+      swiped.current = false
+      return
+    }
+    if (e.target === ref.current) onChange(null)
+  }
+
   return (
     <dialog
       ref={ref}
       className="lightbox"
       aria-label={item?.alt}
       onClose={() => onChange(null)}
-      onClick={(e) => e.target === ref.current && onChange(null)}
+      onClick={onBackdropClick}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
     >
       {item && (
         <figure className="lightbox__figure">

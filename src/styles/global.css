@@ -1832,6 +1832,79 @@ main:focus {
   color: var(--gold);
 }
 
+.gallery__dots {
+  display: none;
+}
+
+/* Телефон: лента со свайпом. Карточка ~84% ширины — видно край следующего фото, это подсказка «листай» */
+@media (max-width: 759px) {
+  .gallery {
+    display: flex;
+    gap: 10px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .gallery::-webkit-scrollbar {
+    display: none;
+  }
+
+  .gallery__item {
+    flex: 0 0 84%;
+    scroll-snap-align: start;
+  }
+
+  /* появление при прокрутке не срабатывает для карточек за правым краем ленты */
+  .gallery__item[data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .gallery__item img {
+    aspect-ratio: 4 / 3;
+  }
+
+  .gallery__dots {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 18px;
+  }
+
+  .gallery__dots button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    position: relative;
+  }
+
+  .gallery__dots button::before {
+    content: '';
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 6px;
+    height: 6px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.35);
+    transition: width 0.3s var(--ease), background 0.3s;
+  }
+
+  .gallery__dots .is-active::before {
+    width: 18px;
+    border-radius: 3px;
+    background: var(--gold);
+  }
+}
+
 /* ---------- Lightbox ---------- */
 .lightbox {
   width: 100vw;
@@ -1842,6 +1915,9 @@ main:focus {
   border: 0;
   background: rgb(7 15 27 / 0.96);
   color: #fff;
+  /* горизонтальные свайпы листают фото (Lightbox.jsx), а не уводят браузер «назад» */
+  touch-action: pan-y pinch-zoom;
+  overscroll-behavior: contain;
 }
 
 .lightbox::backdrop {
@@ -1851,6 +1927,7 @@ main:focus {
 .lightbox__figure {
   display: grid;
   place-items: center;
+  align-content: center;
   gap: 14px;
   height: 100%;
   padding: 70px 72px 28px;

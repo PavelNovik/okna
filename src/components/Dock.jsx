@@ -15,8 +15,11 @@ export default function Dock() {
     ['prices', t.services.pricesTitle],
     ['process', t.process.eyebrow],
     ['about', t.about.eyebrow],
+    ['diagnostics', t.diag.eyebrow],
     ['realizacje', t.gallery.eyebrow],
     ['reviews', t.reviews.eyebrow],
+    ['certs', t.certs.eyebrow],
+    ['blog', t.blog?.eyebrow],
     ['faq', t.faq.eyebrow],
     ['contact', t.contact.eyebrow],
   ]
