@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { brand, tel } from '../config.js'
 import { useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
@@ -9,9 +10,40 @@ import Icon from './Icon.jsx'
 export default function WindowHero() {
   const { t } = useLang()
   const h = t.hero
+  const stage = useRef(null)
+
+  // На телефонах текст hero прижат к низу, а окно — сверху. Высота текста зависит от ширины экрана,
+  // поэтому размер и положение окна считаем по реальному свободному месту между шапкой и текстом.
+  useEffect(() => {
+    const el = stage.current
+    const fit = () => {
+      const mobile = window.matchMedia('(max-width: 860px)').matches
+      const content = el.querySelector('.hero__content')
+      const first = content.firstElementChild
+      if (!mobile || !first) {
+        el.style.removeProperty('--cy')
+        el.style.removeProperty('--ww')
+        return
+      }
+      const header = document.querySelector('.header')
+      const top = (header ? header.offsetHeight : 64) + 20 // от низа шапки
+      const bottom = content.offsetTop + first.offsetTop - 26 // до первой строки текста
+      // высота окна 1.25·w + подоконник ≈ 0.12·w
+      const ww = Math.max(72, Math.min((bottom - top) / 1.37, el.clientWidth * 0.46, 250))
+      const cy = top + (bottom - top - ww * 1.37) / 2 + (ww * 1.25) / 2
+      el.style.setProperty('--ww', `${ww.toFixed(1)}px`)
+      el.style.setProperty('--cy', `${cy.toFixed(1)}px`)
+    }
+    fit()
+    const ro = new ResizeObserver(fit)
+    ro.observe(el)
+    ro.observe(el.querySelector('.hero__content'))
+    return () => ro.disconnect()
+  }, [])
+
   return (
     <section className="hero" id="top" aria-labelledby="hero-title">
-      <div className="hero__stage">
+      <div className="hero__stage" ref={stage}>
         <div className="room" aria-hidden="true">
           <div className="room__wall" />
           <div className="win">

@@ -370,7 +370,7 @@ main:focus {
   gap: 8px;
 }
 
-.header__note span {
+.header__note [aria-hidden] {
   margin-inline: 6px;
   opacity: 0.5;
 }
@@ -564,10 +564,24 @@ main:focus {
 @media (max-width: 760px) {
   :root {
     --header-h: 64px;
+    --util-h: 34px;
   }
 
+  /* на телефоне служебная строка — часы работы и переключатель языка */
   .header__util {
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+  }
+
+  .header__note .icon:not(:first-child),
+  .header__note span,
+  .header__note-area,
+  .header__tel {
     display: none;
+  }
+
+  .lang a {
+    padding: 6px 8px;
   }
 
   .header__call {
@@ -587,6 +601,29 @@ main:focus {
 
   .logo__text {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .header__row {
+    gap: 10px;
+  }
+
+  .header__actions {
+    gap: 6px;
+  }
+
+  .logo {
+    gap: 9px;
+  }
+
+  .logo__text {
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+  }
+
+  .logo__sub {
+    letter-spacing: 0.16em;
   }
 }
 
@@ -907,7 +944,7 @@ main:focus {
 
   .hero__content {
     justify-content: flex-end;
-    padding-bottom: 86px;
+    padding-bottom: 98px;
   }
 
   .hero__content > * {
@@ -924,6 +961,10 @@ main:focus {
   }
 
   .hero__lead {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     margin-top: 14px;
     font-size: 0.92rem;
   }
@@ -937,8 +978,7 @@ main:focus {
   }
 
   .hero__meta {
-    flex-direction: column;
-    gap: 8px;
+    gap: 6px 18px;
     margin-top: 18px;
   }
 
@@ -947,17 +987,16 @@ main:focus {
   }
 }
 
-@media (max-height: 700px) and (max-width: 860px) {
-  .hero__stage {
-    --cy: 23cqh;
-    --ww: min(40cqw, 20cqh);
+/* на телефоне звонок и WhatsApp — в липкой панели внизу, в hero они не дублируются */
+@media (max-width: 760px) {
+  .hero__actions {
+    display: none;
   }
+}
 
+@media (max-height: 700px) and (max-width: 860px) {
   .hero__lead {
-    display: -webkit-box;
     -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .hero__meta {

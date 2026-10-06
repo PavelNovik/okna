@@ -26,7 +26,7 @@ export default function Header() {
           <p className="header__note">
             <Icon name="clock" size={14} /> {t.contact.hoursValue}
             <span aria-hidden="true">·</span>
-            <Icon name="pin" size={14} /> {t.nav.area}
+            <Icon name="pin" size={14} /> <span className="header__note-area">{t.nav.area}</span>
           </p>
           <div className="header__util-end">
             <a href={tel} className="header__tel">

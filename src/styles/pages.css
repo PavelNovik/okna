@@ -461,8 +461,8 @@
     z-index: 60;
     display: grid;
     grid-template-columns: 1.3fr 1fr;
-    gap: 1px;
-    padding-bottom: env(safe-area-inset-bottom);
+    gap: 10px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
     background: var(--night);
     box-shadow: 0 -1px 0 var(--line-dark);
   }
@@ -472,7 +472,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-height: 58px;
+    min-height: 52px;
     font: 600 0.78rem/1 var(--font-body);
     letter-spacing: 0.16em;
     text-transform: uppercase;
