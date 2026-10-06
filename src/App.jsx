@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
-import WhatsAppFloat from './components/WhatsAppFloat.jsx'
+import Dock from './components/Dock.jsx'
 import MobileBar from './components/MobileBar.jsx'
 import Home from './pages/Home.jsx'
 import ServicePage from './pages/ServicePage.jsx'
@@ -50,22 +50,25 @@ export default function App({ path }) {
   return (
     <LangProvider value={{ lang: route.lang, path: route.path, ask, preset }}>
       <SkipLink />
-      <div className="scene" aria-hidden="true">
-        <img
-          className="scene__view"
-          src={img('view')}
-          srcSet={`${img('view', 'sm')} 1100w, ${img('view')} 2400w`}
-          sizes="100vw"
-          alt=""
-          fetchPriority={route.page === 'home' ? 'high' : 'low'}
-        />
-      </div>
+      {/* вид на Познань за окном — только на главной (hero «пролёт через окно») */}
+      {route.page === 'home' && (
+        <div className="scene" aria-hidden="true">
+          <img
+            className="scene__view"
+            src={img('view')}
+            srcSet={`${img('view', 'sm')} 1100w, ${img('view')} 2400w`}
+            sizes="100vw"
+            alt=""
+            fetchPriority="high"
+          />
+        </div>
+      )}
       <Header />
       <main id="main" tabIndex={-1} className={route.page === 'home' ? 'is-home' : 'is-inner'}>
         <Page route={route} />
       </main>
       <Footer />
-      <WhatsAppFloat />
+      <Dock />
       <MobileBar />
       <CookieConsent />
     </LangProvider>

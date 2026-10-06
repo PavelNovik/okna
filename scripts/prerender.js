@@ -11,7 +11,15 @@ const { render, renderHead, robotsTxt, sitemapXml, llmsTxt, routes, notFoundRout
   pathToFileURL(server).href
 )
 
-const template = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
+// Шрифт заголовков (Cormorant 500, латиница + польские буквы) — preload: H1 это LCP-элемент
+const fonts = fs
+  .readdirSync(path.join(dist, 'assets'))
+  .filter((f) => /^cormorant-garamond-latin(-ext)?-500-normal-.*\.woff2$/.test(f))
+  .map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
+  .join('\n    ')
+const template = fs
+  .readFileSync(path.join(dist, 'index.html'), 'utf8')
+  .replace('</head>', `  ${fonts}\n  </head>`)
 const page = (route) =>
   template
     .replace(/<html lang="[^"]*">/, `<html lang="${route.lang}">`)

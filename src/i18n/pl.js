@@ -24,6 +24,7 @@ export default {
       ['/kontakt/', 'Kontakt'],
     ],
     home: 'Strona główna',
+    area: 'Poznań i Wielkopolska',
     crumbs: 'Ścieżka nawigacji',
   },
 
@@ -40,6 +41,10 @@ export default {
     free: 'Bezpłatna wycena',
     freeText: 'Zapytaj 24/7 o cenę i termin',
     scroll: 'Przewiń — otwórz okno',
+    place: 'Poznań · Wielkopolska',
+    explore: 'Zobacz usługi',
+    stages: ['Wnętrze', 'Okno otwarte', 'Widok na Poznań'],
+    stageLabel: 'Poziom',
   },
 
   perks: [

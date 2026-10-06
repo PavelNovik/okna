@@ -17,7 +17,11 @@ fs.mkdirSync(path.join(pub, 'brands'), { recursive: true })
 fs.mkdirSync(raw, { recursive: true })
 
 const SITE = 'https://liwserwis.com/wp-content/uploads/'
-const VIEW = 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=2400&q=88&fm=jpg'
+// Вид из окна: Stary Rynek в Познани сверху (Unsplash, Jakub Żerdzicki), тонируем «под синий час»
+const VIEW = 'https://images.unsplash.com/photo-1706858587788-374fd249a9ca?w=2400&q=88&fm=jpg'
+// Фон шапок внутренних страниц: kamienice na Starym Rynku (Unsplash, Sergei Gussev)
+const RYNEK = 'https://images.unsplash.com/photo-1703022712569-f0d2c15eefbf?w=1800&q=86&fm=jpg'
+const blueHour = (img) => img.modulate({ brightness: 0.62, saturation: 1.15 }).linear([0.86, 0.95, 1.18], [-4, 4, 22]).gamma(1.15)
 
 async function download(url, file) {
   if (fs.existsSync(file)) return fs.readFileSync(file)
@@ -81,10 +85,12 @@ for (const [id, file] of Object.entries(brands)) {
 }
 console.log('  brands')
 
-const view = await download(VIEW, path.join(raw, 'view-unsplash.jpg'))
-await sharp(view).resize({ width: 2400 }).webp({ quality: 76 }).toFile(path.join(out, 'view.webp'))
-await sharp(view).resize({ width: 1100, height: 1500, fit: 'cover', position: 'centre' }).webp({ quality: 74 }).toFile(path.join(out, 'view-sm.webp'))
-console.log('  view')
+const view = await download(VIEW, path.join(raw, 'view-poznan.jpg'))
+await blueHour(sharp(view).resize({ width: 2400 })).webp({ quality: 74 }).toFile(path.join(out, 'view.webp'))
+await blueHour(sharp(view).resize({ width: 1100, height: 1500, fit: 'cover', position: 'centre' })).webp({ quality: 72 }).toFile(path.join(out, 'view-sm.webp'))
+const rynek = await download(RYNEK, path.join(raw, 'rynek.jpg'))
+await blueHour(sharp(rynek).resize({ width: 1800 })).modulate({ brightness: 0.7 }).webp({ quality: 70 }).toFile(path.join(out, 'rynek.webp'))
+console.log('  view, rynek')
 
 const icon = fs.readFileSync(path.join(pub, 'favicon.svg'))
 for (const [file, size] of [['favicon-32.png', 32], ['favicon-192.png', 192], ['apple-touch-icon.png', 180], ['logo.png', 512]]) {
@@ -92,17 +98,17 @@ for (const [file, size] of [['favicon-32.png', 32], ['favicon-192.png', 192], ['
 }
 console.log('  favicons, logo.png')
 
-const bg = await sharp(view).resize(1200, 630, { fit: 'cover' }).toBuffer()
+const bg = await blueHour(sharp(view).resize(1200, 630, { fit: 'cover' })).toBuffer()
 const overlay = Buffer.from(`<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
-  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#0a1a33" stop-opacity=".95"/><stop offset=".6" stop-color="#0a1a33" stop-opacity=".65"/><stop offset="1" stop-color="#0a1a33" stop-opacity=".1"/></linearGradient></defs>
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#0a1626" stop-opacity=".95"/><stop offset=".6" stop-color="#0a1a33" stop-opacity=".65"/><stop offset="1" stop-color="#0a1a33" stop-opacity=".1"/></linearGradient></defs>
   <rect width="1200" height="630" fill="url(#g)"/>
   <rect x="760" y="90" width="340" height="450" rx="10" fill="none" stroke="#f4f7fb" stroke-width="22"/>
   <path d="M930 90v450" stroke="#f4f7fb" stroke-width="16"/>
   <rect x="905" y="300" width="12" height="54" rx="6" fill="#f4f7fb"/>
   <g transform="translate(80 170)">
-    <text x="0" y="70" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="80" fill="#f4f7fb">liwserwis</text>
+    <text x="0" y="70" font-family="Georgia, serif" font-size="78" letter-spacing="10" fill="#f4f1ea">LIWSERWIS</text>
     <text x="0" y="150" font-family="Arial, sans-serif" font-size="40" fill="#f4f7fb">Naprawa okien i drzwi PCV</text>
-    <text x="0" y="210" font-family="Arial, sans-serif" font-size="30" fill="#ffc35a">Gwarancja do 24 mies. · Wielkopolska</text>
+    <text x="0" y="210" font-family="Arial, sans-serif" font-size="30" fill="#d8b46a">Gwarancja do 24 mies. · Wielkopolska</text>
   </g>
 </svg>`)
 await sharp(bg).composite([{ input: overlay }]).jpeg({ quality: 84 }).toFile(path.join(pub, 'og-image.jpg'))

@@ -24,6 +24,7 @@ export default {
       ['/de/#contact', 'Kontakt'],
     ],
     home: 'Startseite',
+    area: 'Posen und Großpolen',
     crumbs: 'Brotkrumen-Navigation',
   },
 
@@ -40,6 +41,10 @@ export default {
     free: 'Kostenloser Kostenvoranschlag',
     freeText: 'Preis und Termin — rund um die Uhr anfragen',
     scroll: 'Scrollen — Fenster öffnen',
+    place: 'Posen · Großpolen',
+    explore: 'Leistungen ansehen',
+    stages: ['Innenraum', 'Fenster offen', 'Blick auf Posen'],
+    stageLabel: 'Ebene',
   },
 
   perks: [

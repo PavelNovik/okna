@@ -1,10 +1,11 @@
-import { brand, cities, tel, waLink } from '../config.js'
+import { brand, tel } from '../config.js'
 import { useLang } from '../i18n/index.jsx'
 import Icon from './Icon.jsx'
 
-// Hero «пролёт через окно»: стена с вырезом-маской и ПВХ-рамой поверх фиксированного пейзажа (.scene в App).
-// Прогресс прокрутки hero — CSS-переменная --hp на <html> (useEffectsFx): сначала поворачивается ручка
-// и створки открываются внутрь, затем комната увеличивается от центра окна — и мы «вылетаем» наружу.
+// Hero «пролёт через окно»: стена с вырезом-маской и ПВХ-рамой поверх фиксированного вида на Познань
+// (.scene в App). Прогресс прокрутки hero — CSS-переменная --hp на <html> (useEffectsFx): ручка
+// поворачивается, створки открываются внутрь, окно растёт — и мы «вылетаем» в вид на Stary Rynek.
+// Подача — как в референсе (Aurelia Residences): антиква капителью, тонкие линии, золотая кнопка.
 export default function WindowHero() {
   const { t } = useLang()
   const h = t.hero
@@ -31,7 +32,7 @@ export default function WindowHero() {
         </div>
 
         <div className="hero__content container">
-          <p className="eyebrow eyebrow--light">{h.eyebrow}</p>
+          <p className="hero__place">{h.place}</p>
           <h1 id="hero-title" className="hero__title">
             {h.title[0]}
             <em>{h.title[1]}</em>
@@ -40,29 +41,21 @@ export default function WindowHero() {
           <p className="hero__lead">{h.lead}</p>
           <div className="hero__actions">
             <a className="btn btn--sun btn--lg" href={tel}>
-              <Icon name="phone" size={20} /> {brand.phone}
+              <Icon name="phone" size={18} /> {brand.phone}
             </a>
-            <a className="btn btn--wa btn--lg" href={waLink(t.wa.hello)} target="_blank" rel="noopener">
-              <Icon name="whatsapp" size={22} /> {h.secondary}
+            <a className="btn btn--ghost btn--lg" href="#services">
+              {h.explore}
             </a>
           </div>
           <ul className="hero__meta">
-            <li>
-              <Icon name="clock" size={18} /> {h.hours}
-            </li>
-            <li>
-              <Icon name="tag" size={18} /> <strong>{h.free}</strong>
-            </li>
-          </ul>
-          <ul className="hero__cities" aria-label={t.contact.area}>
-            {cities.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
+            <li>{h.price}</li>
+            <li>{h.free}</li>
+            <li>{h.hours}</li>
           </ul>
         </div>
 
         <a className="hero__scroll" href="#perks">
-          <Icon name="mouse" size={22} />
+          <span className="hero__scroll-line" aria-hidden="true" />
           <span>{h.scroll}</span>
         </a>
       </div>

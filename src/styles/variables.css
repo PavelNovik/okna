@@ -1,42 +1,41 @@
-/* Liwserwis — «вид из окна»: тёмно-синяя стена комнаты, белая ПВХ-рама, тёплый рассвет за стеклом,
-   дальше — светлые матовые панели над фиксированным пейзажем */
+/* Liwserwis — «синий час над Познанью» по мотивам референса (Aurelia Residences, Pinterest):
+   ночной синий, слоновая кость, приглушённое золото; антиква капителью, прямые углы, тонкие линии */
 :root {
   color-scheme: light;
 
-  --wall: #0c1d36;
-  --navy: #0c1d36;
-  --navy-2: #14294a;
-  --blue: #0b4ea2;
-  --blue-hi: #2f7fe0;
-  --sky: #9cc9ff;
-  --sun: #ffb53d;
-  --sun-hi: #ffd88a;
-  --sun-deep: #e08600;
+  --night: #0a1626;
+  --navy: #0e1d33;
+  --navy-2: #142a47;
+  --navy-3: #1d3a5f;
+  --wall: linear-gradient(180deg, #11233d 0%, #0b1829 100%);
+
+  --ivory: #f4f0e8;
+  --ivory-2: #ebe5d9;
+  --paper: #fbf9f5;
+
+  --gold: #c8a463;
+  --gold-hi: #e3c68f;
+  --gold-deep: #7d5f28; /* золото для текста на светлом фоне (контраст ≥ 4.5) */
   --wa: #25d366;
 
-  --ink: #0f1b2d;
-  --muted: #4a596e;
-  --faint: #536175;
-  --line: rgb(12 29 54 / 0.1);
-  --on-dark: #eef3fa;
-  --on-dark-muted: #a9b8cc;
+  --ink: #13213a;
+  --muted: #4e5a71;
+  --faint: #5d6880;
+  --on-dark: #eef1f6;
+  --on-dark-muted: #a9b5c8;
+  --line: rgb(19 33 58 / 0.14);
+  --line-dark: rgb(255 255 255 / 0.14);
 
-  --paper: rgb(255 255 255 / 0.86);
-  --paper-border: rgb(255 255 255 / 0.75);
-  --paper-shadow: 0 30px 80px -34px rgb(12 29 54 / 0.55);
-  --blur: blur(18px) saturate(150%);
+  --blur: blur(16px) saturate(140%);
+  --shadow: 0 30px 70px -40px rgb(10 22 38 / 0.55);
 
-  --grad-sun: linear-gradient(120deg, #ffe0a0 0%, #ffb53d 50%, #ff9a1f 100%);
-  --grad-text: linear-gradient(100deg, #ffe6ad 0%, #ffb53d 55%, #ff8f3d 100%);
-
-  --font-display: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Times New Roman', Georgia, serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  --radius: 28px;
-  --radius-sm: 14px;
-  --container: 1200px;
-  --gutter: clamp(16px, 4vw, 40px);
-  --header-h: 64px;
+  --container: 1240px;
+  --gutter: clamp(20px, 4vw, 48px);
+  --util-h: 38px;
+  --header-h: 76px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Фазы hero из --hp (0…1, ставит useEffectsFx): ручка → створки → пролёт */
